@@ -1,0 +1,24 @@
+FROM registry.access.redhat.com/ubi8:latest
+MAINTAINER "cwilkers@redhat.com"
+WORKDIR /build/
+
+RUN dnf -y update
+
+RUN dnf -y install make gcc sudo kernel-devel elfutils-libelf-devel
+
+# Version of kernel mod itself, as of this comment, 07.712.02.00
+ARG KMODVER
+
+# Which kernel version to compile against
+ARG KVER
+
+ADD https://docs.broadcom.com/docs-and-downloads/raid-controllers/raid-controllers-common-files/MR_Linux_Drv_7.12-${KMODVER}-1.tgz mr.tar.gz
+
+RUN tar xf mr.tar.gz 
+
+RUN tar xf megaraid_sas-${KMODVER}-src.tar.gz
+
+WORKDIR megaraid_sas-${KMODVER}
+
+RUN make SRC=/usr/src/kernels/${KVER} -f Makefile.standalone
+
