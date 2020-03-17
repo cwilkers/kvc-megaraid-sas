@@ -12,13 +12,18 @@ ARG KMODVER
 # Which kernel version to compile against
 ARG KVER
 
+# TODO Figure out how to not hard code 7.12 here.
 ADD https://docs.broadcom.com/docs-and-downloads/raid-controllers/raid-controllers-common-files/MR_Linux_Drv_7.12-${KMODVER}-1.tgz mr.tar.gz
 
 RUN tar xf mr.tar.gz 
 
 RUN tar xf megaraid_sas-${KMODVER}-src.tar.gz
 
+ADD ../Makefile.kvc megaraid_sas-${KMODVER}/Makefile.kvc
+
 WORKDIR megaraid_sas-${KMODVER}
 
-RUN make SRC=/usr/src/kernels/${KVER} -f Makefile.standalone
+RUN make SRC=/usr/src/kernels/${KVER} -f Makefile.kvc
 
+RUN mkdir -p /lib/modules/${KVER}/extra
+RUN cp /build/megaraid_sas-${KMODVER}/megaraid_sas.ko /lib/modules/${KVER}/extra

@@ -1,0 +1,11 @@
+	CPPFLAGS += -I$(SRC)/drivers/scsi
+
+	obj-m  := megaraid_sas.o
+
+	megaraid_sas-objs := megaraid_sas_base.o megaraid_sas_fusion.o megaraid_sas_fp.o
+
+default: 
+	make V=1 $(CPPFLAGS) -C $(SRC) SUBDIRS=$(PWD) modules
+
+install:
+	make V=1 $(CPPFLAGS) -C $(SRC) SUBDIRS=$(PWD) modules_install
