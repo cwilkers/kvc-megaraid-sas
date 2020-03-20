@@ -4,13 +4,13 @@ WORKDIR /build/
 
 RUN dnf -y update
 
-RUN dnf -y install make gcc sudo kernel-devel elfutils-libelf-devel
+# Which kernel version to compile against
+ARG KVER
+
+RUN dnf -y install make gcc sudo kernel-devel-${KVER} elfutils-libelf-devel
 
 # Version of kernel mod itself, as of this comment, 07.712.02.00
 ARG KMODVER
-
-# Which kernel version to compile against
-ARG KVER
 
 # TODO Figure out how to not hard code 7.12 here.
 ADD https://docs.broadcom.com/docs-and-downloads/raid-controllers/raid-controllers-common-files/MR_Linux_Drv_7.12-${KMODVER}-1.tgz mr.tar.gz
